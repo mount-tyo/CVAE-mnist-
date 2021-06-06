@@ -8,6 +8,7 @@ import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
 import torchvision.transforms as transforms
+from torch.utils.tensorboard import SummaryWriter
 # %matplotlib inline
 
 DEVICE = 'cuda'
@@ -15,7 +16,8 @@ SEED = 0
 CLASS_SIZE = 10
 BATCH_SIZE = 256
 ZDIM = 16
-NUM_EPOCHS = 50
+NUM_EPOCHS = 100
+writer = SummaryWriter(log_dir="./logs")
 
 # Set seeds
 random.seed(SEED)
@@ -112,5 +114,8 @@ for e in range(NUM_EPOCHS):
         train_loss += loss.item() * x.shape[0]
 
     print(f'epoch: {e + 1} epoch_loss: {train_loss/len(train_dataset)}')
+    writer.add_scalar("Epoch", e+1)
+    writer.add_scalar("Loss", train_loss/len(train_dataset))
 
+writer.close()
 torch.save(model.state_dict(), 'model.pth')
