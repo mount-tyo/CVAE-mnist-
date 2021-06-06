@@ -8,7 +8,7 @@ import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
 import torchvision.transforms as transforms
-%matplotlib inline
+# %matplotlib inline
 
 DEVICE = 'cuda'
 SEED = 0
@@ -112,3 +112,5 @@ for e in range(NUM_EPOCHS):
         train_loss += loss.item() * x.shape[0]
 
     print(f'epoch: {e + 1} epoch_loss: {train_loss/len(train_dataset)}')
+
+torch.save(model.state_dict(), 'model.pth')
