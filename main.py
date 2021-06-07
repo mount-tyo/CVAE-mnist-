@@ -1,22 +1,7 @@
-import os
-import random
-import numpy as np
-import matplotlib.pyplot as plt
-import torch
-import torchvision
-import torch.nn as nn
-import torch.optim as optim
-import torch.nn.functional as F
-import torchvision.transforms as transforms
-from torch.utils.tensorboard import SummaryWriter
-# %matplotlib inline
+from config import *
+from utils import to_onehot
+from models import CVAE
 
-DEVICE = 'cuda'
-SEED = 0
-CLASS_SIZE = 10
-BATCH_SIZE = 256
-ZDIM = 16
-NUM_EPOCHS = 100
 writer = SummaryWriter(log_dir="./logs")
 
 # Set seeds
@@ -26,47 +11,6 @@ torch.manual_seed(SEED)
 torch.cuda.manual_seed(SEED)
 
 
-class CVAE(nn.Module):
-    def __init__(self, zdim):
-        super().__init__()
-        self._zdim = zdim
-        self._in_units = 28 * 28
-        hidden_units = 512
-        self._encoder = nn.Sequential(
-            nn.Linear(self._in_units + CLASS_SIZE, hidden_units),
-            nn.ReLU(inplace=True),
-            nn.Linear(hidden_units, hidden_units),
-            nn.ReLU(inplace=True),
-        )
-        self._to_mean = nn.Linear(hidden_units, zdim)
-        self._to_lnvar = nn.Linear(hidden_units, zdim)
-        self._decoder = nn.Sequential(
-            nn.Linear(zdim + CLASS_SIZE, hidden_units),
-            nn.ReLU(inplace=True),
-            nn.Linear(hidden_units, hidden_units),
-            nn.ReLU(inplace=True),
-            nn.Linear(hidden_units, self._in_units),
-            nn.Sigmoid()
-        )
-
-    def encode(self, x, labels):
-        in_ = torch.empty((x.shape[0], self._in_units + CLASS_SIZE), device=DEVICE)
-        in_[:, :self._in_units] = x
-        in_[:, self._in_units:] = labels
-        h = self._encoder(in_)
-        mean = self._to_mean(h)
-        lnvar = self._to_lnvar(h)
-        return mean, lnvar
-
-    def decode(self, z, labels):
-        in_ = torch.empty((z.shape[0], self._zdim + CLASS_SIZE), device=DEVICE)
-        in_[:, :self._zdim] = z
-        in_[:, self._zdim:] = labels
-        return self._decoder(in_)
-
-
-def to_onehot(label):
-    return torch.eye(CLASS_SIZE, device=DEVICE, dtype=torch.float32)[label]
 
 
 # Train
