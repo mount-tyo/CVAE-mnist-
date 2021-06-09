@@ -11,16 +11,16 @@ import torchvision.transforms as transforms
 from torch.utils.tensorboard import SummaryWriter
 
 #------ Variables ------#
-DEVICE = 'cuda'
-# DEVICE = 'cpu'
-SEED = 0
-CLASS_SIZE = 10
-DEG_LABEL_SIZE = 4
-BATCH_SIZE = 256
-ZDIM = 16
-NUM_EPOCHS = 1000
-LEARNING_RATIO = 1e-3
-NUM_WORKERS = 4
+DEVICE = 'cuda'                         # use device "GPU"
+# DEVICE = 'cpu'                        # use device "CPU"
+SEED = 0                                # 乱数生成器を初期化する値
+CLASS_SIZE = 10                         # MNISTの数字ラベル「0」〜「9」の10個
+DEG_LABEL_SIZE = 4                      # MNISTの回転角度ラベル「0」〜「3」の4個
+BATCH_SIZE = 256                        # バッチ処理用
+ZDIM = 16                               # 潜在空間の次元, 大きいほど精度は上がる？が、...
+NUM_EPOCHS = 1000                       # エポック数。１エポックでデータセットの全てのデータを見たことになる。
+LEARNING_RATIO = 1e-3                   # 学習率
+NUM_WORKERS = 8                         # ミニバッチを作成する際の並列実行数
 
 #------ Paths -------#
 path_mnist_dataset = "./data/"
