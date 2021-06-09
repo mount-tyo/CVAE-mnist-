@@ -2,5 +2,5 @@ from config import *
 
 
 
-def to_onehot(label):
-    return torch.eye(CLASS_SIZE, device=DEVICE, dtype=torch.float32)[label]
+def to_onehot(label, SIZE):
+    return torch.eye(SIZE, device=DEVICE, dtype=torch.float32)[label]

@@ -2,8 +2,13 @@ from config import *
 from utils import to_onehot
 from models import CVAE
 
-model = CVAE(ZDIM).to(DEVICE)
-model.load_state_dict(torch.load('./model-e100.pth'))
+# model = CVAE(ZDIM).to(DEVICE)     # gpu
+model = CVAE(ZDIM)                  # cpu
+
+# gpuでのモデル呼び出し
+# model.load_state_dict(torch.load('./model-e100.pth'))
+# cpu でのモデル呼び出し
+model.load_state_dict(torch.load('./model-e100.pth', map_location=torch.device('cpu')))
 
 test_dataset = torchvision.datasets.MNIST(
     root='./data',
@@ -13,9 +18,11 @@ test_dataset = torchvision.datasets.MNIST(
 )
 target_image, label = list(test_dataset)[48]
 
-x = target_image.view(1, 28*28).to(DEVICE)
+# x = target_image.view(1, 28*28).to(DEVICE)
+x = target_image.view(1, 28*28)
+
 with torch.no_grad():
-    mean, _ = model.encode(x, to_onehot(label))
+    mean, a = model.encode(x, to_onehot(label))
 z = mean
 
 print(f'z = {z.cpu().detach().numpy().squeeze()}')
@@ -25,6 +32,7 @@ for label in range(CLASS_SIZE):
     with torch.no_grad():
         y = model.decode(z, to_onehot(label))
     y = y.reshape(28, 28).cpu().detach().numpy()
+    
     fig, ax = plt.subplots()
     ax.imshow(y)
     ax.set_title(f'Generation(label={label})')
@@ -34,5 +42,5 @@ for label in range(CLASS_SIZE):
         bottom=False,
         left=False,
     )
-    plt.savefig(f'img/cvae/generation/fat/img{label}')
+    plt.savefig(f'img/cvae/generation/fat/img{label+20}')
     plt.close(fig) 
