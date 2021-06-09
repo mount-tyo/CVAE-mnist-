@@ -5,30 +5,8 @@ from utils import to_onehot
 from models import CVAE
 import preprocess
 
-# tensorboard
+# Set Tensorboard
 writer = SummaryWriter(log_dir="./logs")
-
-
-def plot(img, label, deg=None):
-    y = img[0].reshape(28,28).cpu().detach().numpy()
-
-    # Plt setting
-    fig, ax = plt.subplots()
-    ax.imshow(y)
-    ax.set_title(f'Generation(label={label}, deg={deg})')
-    ax.tick_params(
-        labelbottom=False,
-        labelleft=False,        
-        bottom=False,
-        left=False,
-    )
-
-    # Plot
-    plt.show()
-    plt.clf()
-    plt.close(fig) 
-
-
 
 # Set seeds
 random.seed(SEED)
@@ -37,27 +15,26 @@ torch.manual_seed(SEED)
 torch.cuda.manual_seed(SEED)
 
 
-
-
-# Train
+# Load Dataset
 train_dataset = torchvision.datasets.MNIST(
-    root='./data',
-    train=True,
+    root=path_mnist_dataset,
+    train=flag_mnist_dataset_train,
     transform=transforms.ToTensor(),
-    download=True,
+    download=flag_mnist_dataset_dl,
 )
 train_loader = torch.utils.data.DataLoader(
     dataset=train_dataset,
     batch_size=BATCH_SIZE,
-    shuffle=True,
-    num_workers=0
+    shuffle=flag_shuffle_trainloader_,
+    num_workers=NUM_WORKERS
 )
+length_trainloader = len(train_loader)
 
-
-
+# Set Model
 model = CVAE(ZDIM).to(DEVICE)
-optimizer = optim.Adam(model.parameters(), lr=1e-3)
+optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATIO)
 
+# Train Model
 model.train()
 start = time.time()
 for e in range(NUM_EPOCHS):
@@ -81,10 +58,10 @@ for e in range(NUM_EPOCHS):
         # print(f"lables = {labels}")
         # print("---------------------")
         labels = to_onehot(labels, CLASS_SIZE)
-        if i == 234:
-            deg_labels = to_onehot(degs[256*i:], DEG_LABEL_SIZE)
+        if i == (length_trainloader-1):
+            deg_labels = to_onehot(degs[BATCH_SIZE*i:], DEG_LABEL_SIZE)
         else:
-            deg_labels = to_onehot(degs[256*i:256*(i+1)], DEG_LABEL_SIZE)
+            deg_labels = to_onehot(degs[BATCH_SIZE*i:BATCH_SIZE*(i+1)], DEG_LABEL_SIZE)
         # print(f"deg_lables = {len(labels)}")
         # print(f"type lables = {type(labels)}")
         # print(f"shape lables = {labels.shape}")
