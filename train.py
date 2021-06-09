@@ -5,7 +5,8 @@ from utils import to_onehot
 from models import CVAE
 import preprocess
 
-# writer = SummaryWriter(log_dir="./logs")
+# tensorboard
+writer = SummaryWriter(log_dir="./logs")
 
 
 def plot(img, label, deg=None):
@@ -112,9 +113,9 @@ for e in range(NUM_EPOCHS):
         train_loss += loss.item() * x.shape[0]
 
     print(f'epoch: {e + 1} epoch_loss: {train_loss/len(train_dataset)}')
-    # writer.add_scalar("Epoch", e+1)
-    # writer.add_scalar("Loss", train_loss/len(train_dataset))
+    writer.add_scalar("Loss(BCE)/Epoch", train_loss/len(train_dataset), e+1)
 
-# writer.close()
+
+writer.close()
 print(f"time = {time.time() - start}")
 torch.save(model.state_dict(), f'model_e{NUM_EPOCHS}.pth')
