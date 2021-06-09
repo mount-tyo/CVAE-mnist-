@@ -12,6 +12,7 @@ Markdown==3.3.4
 matplotlib==3.4.2
 numpy==1.20.3
 oauthlib==3.1.1
+opencv-python==4.5.2.54
 Pillow==8.2.0
 protobuf==3.17.2
 pyasn1==0.4.8
@@ -25,9 +26,10 @@ six==1.16.0
 tensorboard==2.5.0
 tensorboard-data-server==0.6.1
 tensorboard-plugin-wit==1.8.0
-torch==1.8.1+cu111
+torch==1.8.1+cpu
 torchaudio==0.8.1
-torchvision==0.9.1+cu111
+torchvision==0.9.1+cpu
+tqdm==4.61.0
 typing-extensions==3.10.0.0
 urllib3==1.26.5
 Werkzeug==2.0.1
