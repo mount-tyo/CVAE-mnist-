@@ -10,7 +10,7 @@ DEG = 3
 LABEL = 5
 
 model = CVAE(ZDIM).to(DEVICE)
-model.load_state_dict(torch.load('./saved_models/zdim32/nor+deg_label/model_e500.pth'))
+model.load_state_dict(torch.load('./saved_models/zdim64/nor+deg_label/model_e500.pth'))
 
 print(model)
 
