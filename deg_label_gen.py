@@ -7,7 +7,7 @@ from utils import to_onehot
 # Generation data with label '5'
 NUM_GENERATION = 100
 DEG = 3
-LABEL = 5
+LABEL = 3
 
 model = CVAE(ZDIM).to(DEVICE)
 model.load_state_dict(torch.load('./saved_models/zdim64/nor+deg_label/model_e500.pth'))
